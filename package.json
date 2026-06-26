@@ -1,0 +1,26 @@
+{
+  "name": "instagallery",
+  "version": "1.0.0",
+  "description": "InstaGallery is a locally hosted, browser-based media viewer. It allows users to track specific local folders on their computer and view the images and videos inside them.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && node server.js",
+    "client": "cd client && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FabHaguma/instagallery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/FabHaguma/instagallery/issues"
+  },
+  "homepage": "https://github.com/FabHaguma/instagallery#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
