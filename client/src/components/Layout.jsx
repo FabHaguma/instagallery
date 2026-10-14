@@ -50,7 +50,7 @@ export default function Layout() {
                 <input
                   type="range"
                   min="3"
-                  max="10"
+                  max="5"
                   step="1"
                   value={gridCols}
                   onChange={(e) => setGridCols(parseInt(e.target.value))}

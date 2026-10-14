@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import MediaViewer from './MediaViewer';
 
 export default function MediaModal({ media, onClose, onNext, onPrev }) {
@@ -33,6 +33,19 @@ export default function MediaModal({ media, onClose, onNext, onPrev }) {
       >
         <X className="w-8 h-8 drop-shadow-md" />
       </button>
+
+      <div className="absolute top-4 left-4 z-[60] flex items-center gap-2 max-w-[calc(100%-6rem)]">
+        <button
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Show file name"
+          className="peer p-1.5 text-white/70 hover:text-white bg-black/20 hover:bg-black/40 rounded-full transition shrink-0"
+        >
+          <Info className="w-5 h-5" />
+        </button>
+        <span className="truncate text-sm px-2 py-1 rounded bg-blue-500 text-white opacity-0 peer-hover:opacity-100 transition-opacity">
+          {media?.name}
+        </span>
+      </div>
 
       {onPrev && (
         <button 

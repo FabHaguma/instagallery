@@ -11,10 +11,12 @@ const COLS_CLASS = {
   9: 'grid-cols-9', 10: 'grid-cols-10',
 };
 
-function Thumbnail({ item, index, selected, onClick }) {
+function Thumbnail({ item, index, selected, onClick, onHover }) {
   return (
     <div
       onClick={() => onClick(index)}
+      onMouseEnter={() => onHover(item.name)}
+      onMouseLeave={() => onHover(null)}
       className={`aspect-square relative group cursor-pointer overflow-hidden bg-gray-100 dark:bg-zinc-900 transition-all ${
         selected ? 'ring-2 ring-blue-500 ring-inset' : ''
       }`}
@@ -52,6 +54,7 @@ export default function FolderView() {
   const [error, setError] = useState('');
   const [folder, setFolder] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [hoveredName, setHoveredName] = useState(null);
 
   // When switching to grid mode, clear pane selection
   useEffect(() => {
@@ -79,6 +82,12 @@ export default function FolderView() {
     };
     fetchFolderData();
   }, [id]);
+
+  useEffect(() => {
+    if (!folder?.name) return;
+    document.title = `InstaGallery - ${folder.name}`;
+    return () => { document.title = 'InstaGallery'; };
+  }, [folder?.name]);
 
   if (loading) {
     return (
@@ -148,8 +157,15 @@ export default function FolderView() {
                 index={index}
                 selected={false}
                 onClick={setSelectedIndex}
+                onHover={setHoveredName}
               />
             ))}
+          </div>
+        )}
+
+        {hoveredName && (
+          <div className="sticky bottom-0 py-2 text-center text-sm truncate bg-white/90 dark:bg-zinc-950/90 backdrop-blur-sm pointer-events-none">
+            {hoveredName}
           </div>
         )}
 
@@ -169,7 +185,7 @@ export default function FolderView() {
     <div className="flex gap-4" style={{ height: 'calc(100vh - 80px)' }}>
       <div className="flex flex-col min-w-0 overflow-hidden shrink-0" style={{ width: '47%' }}>
         {ProfileCard}
-        <div className={"overflow-y-auto flex-1 grid " + colsClass + " gap-px place-content-start"}>
+        <div className={"overflow-y-auto flex-1 grid " + colsClass + " auto-rows-max gap-px place-content-start"}>
           {media.map((item, index) => (
             <Thumbnail
               key={item.name}
@@ -177,29 +193,35 @@ export default function FolderView() {
               index={index}
               selected={selectedIndex === index}
               onClick={setSelectedIndex}
+              onHover={setHoveredName}
             />
           ))}
         </div>
       </div>
 
-      <div className="flex-1 rounded-xl overflow-hidden bg-zinc-950 relative min-w-0">
-        {selectedIndex !== null ? (
-          <>
-            <div
-              className="absolute inset-0 z-0"
-              onClick={() => setSelectedIndex(null)}
-            />
-            <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center p-4">
-              <div className="pointer-events-auto w-full h-full flex items-center justify-center">
-                <MediaViewer media={media[selectedIndex]} />
+      <div className="flex-1 flex flex-col min-w-0 min-h-0">
+        <div className="flex-1 min-h-0 rounded-xl overflow-hidden bg-zinc-950 relative">
+          {selectedIndex !== null ? (
+            <>
+              <div
+                className="absolute inset-0 z-0"
+                onClick={() => setSelectedIndex(null)}
+              />
+              <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center p-4">
+                <div className="pointer-events-auto w-full h-full flex items-center justify-center">
+                  <MediaViewer media={media[selectedIndex]} />
+                </div>
               </div>
+            </>
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-zinc-600 text-sm select-none">
+              Select a file to preview
             </div>
-          </>
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-zinc-600 text-sm select-none">
-            Select a file to preview
-          </div>
-        )}
+          )}
+        </div>
+        <div className="h-8 mt-2 flex items-center justify-center px-2 text-sm truncate text-gray-600 dark:text-zinc-300 select-none">
+          {hoveredName}
+        </div>
       </div>
     </div>
   );
